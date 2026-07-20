@@ -1,4 +1,9 @@
 analyzer/
+confusion_matrix_Test Data.png
+experiment_info.json
+dataset.csv
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -88,3 +93,5 @@ target/
 
 # Mypy cache
 .mypy_cache/
+/tfidf_vectorizer.pkl
+/lgbm_model.pkl

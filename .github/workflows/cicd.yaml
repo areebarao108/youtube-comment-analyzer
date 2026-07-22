@@ -107,17 +107,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
         run: |
-          nohup python flask_app/app.py > flask.log 2>&1 &
-          sleep 15
-
-          echo "========== Flask Log =========="
-          cat flask.log
-
-          echo "========== Running Processes =========="
-          ps -ef | grep python
-
-          echo "========== Checking Port 5000 =========="
-          curl http://localhost:5000 || true
+          nohup python backend/app.py &
 
       - name: Run Flask API tests
         run: |

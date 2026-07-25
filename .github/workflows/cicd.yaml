@@ -1,6 +1,12 @@
 name: CICD Pipeline
 
-on: push
+on:
+  push:
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+      - '**.md'
+
 
 jobs:
   model-deployment:

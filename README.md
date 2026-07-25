@@ -36,12 +36,17 @@ Trained on labeled Reddit sentiment dataset with rigorous experiment tracking:
 All experiments logged to MLflow with metrics, parameters, and confusion matrices.
 
 ## DVC Pipeline
+
+Reproducible pipeline with 5 stages:
+
+```yaml
 dvc.yaml
 ├── data_ingestion      # Fetch and store raw data to S3
 ├── preprocessing       # Clean, tokenize, TF-IDF vectorization
 ├── model_building      # Train LightGBM with tracked hyperparameters
 ├── evaluation          # Compute accuracy, precision, recall, confusion matrix
 └── model_registry      # Register best model to MLflow model registry
+```
 
 
 DVC tracks data and pipeline state. Dataset artifacts stored in AWS S3.
@@ -97,7 +102,8 @@ Run with Docker
 docker build -t yt-chrome-plugin .
 docker run -p 5000:5000 yt-chrome-plugin
 
-Project Structure
+##Project Structure
+```
 yt_comment_analyzer/
 ├── app.py                    # Flask API (5 endpoints)
 ├── Dockerfile                # Container config
@@ -114,6 +120,7 @@ yt_comment_analyzer/
 ├── notebooks/                # EDA and baseline experiments
 ├── models/                   # Serialized model artifacts
 └── README.md
+```
 
 Why Not BERT?
 BERT and transformer-based models would likely improve performance further.

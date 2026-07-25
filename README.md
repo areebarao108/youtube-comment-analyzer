@@ -1,57 +1,98 @@
-yt_comment_analyzer
-==============================
+# YouTube Comment Analyzer — NLP Backend
 
-an ml project which analyzes the comments of youtube videos
+An end-to-end MLOps pipeline for sentiment analysis of YouTube comments.
+Trains and tracks NLP models with MLflow, versions data and pipelines with DVC,
+and serves predictions via a containerized Flask API deployed on AWS, integrated into a Chrome extension.
 
-Project Organization
-------------
+## What It Does
 
-    ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
+- Fetches YouTube comments via a Chrome extension frontend
+- Performs sentiment/toxicity classification using an optimized LightGBM model
+- Serves real-time predictions through a REST API
+- Full MLOps lifecycle: tracked experiments → reproducible pipelines → containerized API → CI/CD → AWS deployment
+
+## Tech Stack
+
+| Layer | Tools |
+|---|---|
+| ML & NLP | Python, Scikit-learn, LightGBM, TF-IDF |
+| MLOps | MLflow (experiment tracking), DVC (data/pipeline versioning), S3 (artifact storage) |
+| Backend | Flask, REST API |
+| Frontend | Chrome Extension (JavaScript, HTML, CSS) |
+| DevOps | Docker, GitHub Actions CI/CD, AWS ECR, AWS CodeDeploy |
+
+## Model Development Pipeline
+
+Trained on labeled Reddit sentiment dataset with rigorous experiment tracking:
+
+| Experiment | Focus | Key Decision |
+|---|---|---|
+| Exp 1 | Vectorization | TF-IDF outperformed Bag-of-Words |
+| Exp 2 | Feature selection | Tuned max_features for optimal representation |
+| Exp 3 | Class imbalance | ADASYN yielded best class distribution |
+| Exp 4 | Model selection | LightGBM outperformed Random Forest and others |
+| Exp 5 | Hyperparameter tuning | Final model: **86% accuracy** |
+
+All experiments logged to MLflow with metrics, parameters, and confusion matrices.
+
+## DVC Pipeline
+dvc.yaml
+├── data_ingestion      # Fetch and store raw data to S3
+├── preprocessing       # Clean, tokenize, TF-IDF vectorization
+├── model_building      # Train LightGBM with tracked hyperparameters
+├── evaluation          # Compute accuracy, precision, recall, confusion matrix
+└── model_registry      # Register best model to MLflow model registry
 
 
---------
+DVC tracks data and pipeline state. Dataset artifacts stored in AWS S3.
 
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+## API Endpoints
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/predict` | POST | Batch sentiment prediction for YouTube comments |
+| `/predict_with_timestamps` | POST | Sentiment prediction with comment timestamps |
+| `/generate_chart` | POST | Pie chart visualization of sentiment distribution |
+| `/generate_wordcloud` | POST | Word cloud from preprocessed comment text |
+| `/generate_trend_graph` | POST | Monthly sentiment trend graph over time |
+
+## Chrome Extension Integration
+YouTube Page → Chrome Extension (JS) → Flask API (Docker on AWS)→ MLflow Model Registry
+DVC + S3 Artifacts
+
+
+Frontend repo: [github.com/areebarao108/yt-chrome-plugin-frontend](https://github.com/areebarao108/yt-chrome-plugin-frontend)
+
+## CI/CD & Deployment
+
+GitHub Actions workflow automates:
+
+1. Run DVC pipeline end-to-end
+2. Model loading validation test
+3. Model signature test
+4. Performance test against accuracy threshold
+5. Promote passing model to "Production" stage in MLflow
+6. Build and start Flask API
+7. Run API integration tests
+8. Build Docker image and push to **AWS ECR**
+9. Deploy to **AWS CodeDeploy** for live production serving
+
+## How to Run Locally
+
+```bash
+# Clone
+git clone https://github.com/areebarao108/yt_comment_analyzer.git
+cd yt_comment_analyzer
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run DVC pipeline
+dvc repro
+
+# Start Flask API
+python app.py
+
+
+Reproducible pipeline with 5 stages:
+

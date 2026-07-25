@@ -92,7 +92,32 @@ dvc repro
 
 # Start Flask API
 python app.py
+```
+Run with Docker
+docker build -t yt-chrome-plugin .
+docker run -p 5000:5000 yt-chrome-plugin
 
+Project Structure
+yt_comment_analyzer/
+├── app.py                    # Flask API (5 endpoints)
+├── Dockerfile                # Container config
+├── requirements.txt          # Python dependencies
+├── dvc.yaml                  # DVC pipeline definition
+├── dvc.lock                  # Pipeline reproducibility lock
+├── .github/workflows/        # CI/CD configuration
+├── src/                      # Pipeline stage scripts
+│   ├── data_ingestion.py
+│   ├── preprocessing.py
+│   ├── model_building.py
+│   ├── evaluation.py
+│   └── model_registry.py
+├── notebooks/                # EDA and baseline experiments
+├── models/                   # Serialized model artifacts
+└── README.md
 
-Reproducible pipeline with 5 stages:
+Why Not BERT?
+BERT and transformer-based models would likely improve performance further.
+However, this project intentionally uses classical ML (LightGBM + TF-IDF) to demonstrate
+end-to-end MLOps engineering, pipeline reproducibility, and production deployment—skills
+that transfer directly to deep learning systems.
 

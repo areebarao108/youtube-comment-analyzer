@@ -98,11 +98,11 @@ dvc repro
 # Start Flask API
 python app.py
 ```
-Run with Docker
+## Run with Docker
 docker build -t yt-chrome-plugin .
 docker run -p 5000:5000 yt-chrome-plugin
 
-##Project Structure
+## Project Structure
 ```
 yt_comment_analyzer/
 ├── app.py                    # Flask API (5 endpoints)

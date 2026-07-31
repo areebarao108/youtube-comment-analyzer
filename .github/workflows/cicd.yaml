@@ -173,6 +173,6 @@ jobs:
             --application-name YTChromePlugin \
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --deployment-group-name YTChromePluginDeploymentGroup \
-            --s3-location bucket=ytcodedeploybuckets ,key=deployment.zip,bundleType=zip \
+            --s3-location bucket=ytcodedeploybuckets,key=deployment.zip,bundleType=zip \
             --file-exists-behavior OVERWRITE \
             --region ap-south-1
